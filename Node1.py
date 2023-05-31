@@ -2,13 +2,11 @@
 
 # Built from: https://thepihut.com/blogs/raspberry-pi-tutorials/wireless-communication-between-two-raspberry-pi-pico-w-boards
 
-# Import Libraries
+# Import libraries
 import network
 import socket
 import time
-from machine import Pin, ADC
-from secret import ssid,password
-import random 
+from secret import ssid, password
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 wlan.connect(ssid, password)
@@ -37,19 +35,30 @@ s.bind(addr)
 s.listen(1)
 print('listening on', addr)
 
+# Open file
+file=open("data.csv","w")
+
 # Main Loop: Listen for connections and incoming data
 while True:
     try:
+        # Retrieve data
         cl, addr = s.accept()
-        print('client connected from', addr)
         incoming = cl.recv(1024)
         print(incoming)
+        
+        # Retrieve timestamp and write to file
+        dt = time.localtime()  # (year, month, day, hour, minute, second, day of the week, day of the year
+        timestamp = [dt[2], dt[3], dt[4], dt[5]]
+        for i in range(0, len(timestamp)):
+            file.write(str(timestamp[i]))
+            file.write(",")
+        file.write(incoming)
+        file.write("\n")
+        file.flush()
         cl.close()
 
     except OSError as e:
-        #cl.close()
+        cl.close()
         print('connection closed')
     finally:
         cl.close()
-
-

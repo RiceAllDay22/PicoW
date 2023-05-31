@@ -2,12 +2,11 @@
 
 # Built from: https://thepihut.com/blogs/raspberry-pi-tutorials/wireless-communication-between-two-raspberry-pi-pico-w-boards
 
-# Import Libraries
+# Import libraries
 import network
 import time
 from secret import ssid, password, ip
 import socket
-import random
 import onewire, ds18x20, time
 from machine import Pin
 
@@ -31,35 +30,32 @@ while not wlan.isconnected() and wlan.status() >= 0:
 wlan.status() # 3 == success
 wlan.ifconfig()
 print(wlan.ifconfig())
+ai = socket.getaddrinfo(ip, 80) # Address of Web Server
+addr = ai[0][-1]
+strength = 0 # initialize variable for the wifi signal strength
 
 # Main Loop: Send data to Node 1
 while True:
+    #Retrieve wifi signal strength
     accessPoints = wlan.scan()
     for ap in accessPoints:
-        if ap[0] == b'WhyWifiExpensive':
-            print(f'strength = {ap[3]}')
-
-    ai = socket.getaddrinfo(ip, 80) # Address of Web Server
-    addr = ai[0][-1]
+        if ap[0] == b"WhyWifiExpensive":
+            strength = ap[3]
+            break
 
     # Create a socket and make a HTTP request
     s = socket.socket() # Open socket
     s.connect(addr)
     
-    
     #Collect Data
     sensor.convert_temp()
-    #dt = time.localtime()  # (year, month, day, hour, minute, second, day of the week, day of the year
-
-    temp1 = int(round(sensor.read_temp(sensor1),1) *9/5 +32)
-    temp2 = int(round(sensor.read_temp(sensor2),1) *9/5 +32)
-    print('temp1:', temp1)
-    print('temp2:', temp2)
-    print('')
+    temp1 = round(sensor.read_temp(sensor1),1)*9/5+32
+    temp2 = round(sensor.read_temp(sensor2),1)*9/5+32
+    print("temp1:", temp1, "temp2:", temp2, "strength:", strength)
     
+    #Send data
     data = str(temp1) + "," + str(temp2)
-    
     s.send(data)
-    s.close()          # Close socket
-    time.sleep(2)      # wait
+    s.close() # Close socket
+    time.sleep(2) # wait
 
