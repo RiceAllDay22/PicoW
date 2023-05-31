@@ -5,9 +5,8 @@ Four main files:
 - server.py
 - data.csv
 
-Attached are three python scripts. Please fill out the wifi information in the server.py file. And upload server.py into both Nodes.
+The Node1.py is for the Pi Pico W that is designated as the central hub. It continuously listens for incoming data in the network and saves the data into the data.csv file.
 
-The Node1.py is for the central hub that will be receiving data.
-The Node2.py is for the pico with two temperature probes attached.
+The Node2.py is for the Pi Pico W with two temperature probes attached. It continuously prints out the wifi signal strength and sends temp1 and temp2 data to the central hub.
 
-Node2 prints out signal strength, and sends temp1 and temp2 data to Node1, which is continuously on the lookout for incoming data.
+The server.py contains wifi information. It must be filled out appropriately and uploaded into both Nodes.
