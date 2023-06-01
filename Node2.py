@@ -5,7 +5,7 @@
 # Import libraries
 import network
 import time
-from secret import ssid, password, ip
+from server import ssid, password, ip
 import socket
 import onewire, ds18x20, time
 from machine import Pin
