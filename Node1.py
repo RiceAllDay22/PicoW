@@ -6,7 +6,7 @@
 import network
 import socket
 import time
-from secret import ssid, password
+from server import ssid, password
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 wlan.connect(ssid, password)
